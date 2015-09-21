@@ -2,13 +2,44 @@ group 'hyperion'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'idea'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile (
+            [group: 'log4j', name: 'log4j', version: '1.2.17'],
+            [group: 'org.aspectj', name: 'aspectjrt', version: '1.8.7'],
+            [group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.7'],
+            [group: 'org.springframework', name: 'spring-aop', version: '4.2.1.RELEASE'],
+            [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2']
+    )
+
+    testCompile(group: 'org.mockito', name: 'mockito-all', version: '1.10.19') {
+        exclude module: 'junit'
+    }
+
+    testCompile (
+            [group: 'junit', name: 'junit', version: '4.11'],
+            [group: 'redis.clients', name: 'jedis', version: '2.7.3']
+    )
+}
+
+idea {
+    project {
+        languageLevel = '1.8'
+        jdkName = '1.8'
+
+        ipr {
+            withXml { provider ->
+                provider.node.component
+                        .find { it.@name == 'VcsDirectoryMappings' }
+                        .mapping.@vcs = 'Git'
+            }
+        }
+    }
 }
